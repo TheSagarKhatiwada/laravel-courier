@@ -16,10 +16,10 @@ class TrackingController extends Controller
 
     public function show(string $awb)
     {
-        $shipment = Shipment::with(['trackings' => function ($q) {
-            $q->orderBy('tracked_at', 'desc');
-        }, 'branch'])->where('awb_number', $awb)->first();
+        $shipment = Shipment::with(['trackings' => fn($q) => $q->orderBy('tracked_at', 'desc'), 'branch'])
+            ->where('awb_number', $awb)
+            ->first();
 
-        return view('welcome', compact('shipment', 'awb'));
+        return view('web.track_result', compact('shipment', 'awb'));
     }
 }

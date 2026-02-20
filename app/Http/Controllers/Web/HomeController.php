@@ -4,38 +4,42 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
+use App\Models\CourierRate;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('welcome');
+        $branches = Branch::where('is_active', true)->get();
+        return view('web.home', compact('branches'));
     }
 
     public function trackPage()
     {
-        return view('welcome');
+        return view('web.track');
     }
 
     public function services()
     {
-        return view('welcome');
+        return view('web.services');
     }
 
     public function branches()
     {
         $branches = Branch::where('is_active', true)->get();
-        return view('welcome', compact('branches'));
+        return view('web.branches', compact('branches'));
     }
 
     public function contact()
     {
-        return view('welcome');
+        return view('web.contact');
     }
 
     public function rates()
     {
-        return view('welcome');
+        $branches = Branch::where('is_active', true)->get();
+        $rates = CourierRate::with('branch')->where('is_active', true)->get();
+        return view('web.rates', compact('branches', 'rates'));
     }
 }

@@ -3,26 +3,34 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Branch;
-use App\Models\Customer;
 use App\Models\Shipment;
-use Illuminate\Http\Request;
+use App\Models\Customer;
+use App\Models\Branch;
+use App\Models\Employee;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        $branchId = $user->branch_id;
+
         $stats = [
-            'total_shipments'    => Shipment::count(),
-            'delivered'          => Shipment::where('status', 'delivered')->count(),
-            'in_transit'         => Shipment::where('status', 'in_transit')->count(),
-            'pending'            => Shipment::whereIn('status', ['booked', 'picked'])->count(),
-            'total_customers'    => Customer::count(),
-            'total_branches'     => Branch::where('is_active', true)->count(),
+            'total_shipments' => Shipment::when($branchId, fn($q) => $q->where('branch_id', $branchId))->count(),
+            'pending_shipments' => Shipment::when($branchId, fn($q) => $q->where('branch_id', $branchId))->whereNotIn('status', ['delivered', 'returned', 'cancelled'])->count(),
+            'delivered_today' => Shipment::when($branchId, fn($q) => $q->where('branch_id', $branchId))->where('status', 'delivered')->whereDate('delivered_at', today())->count(),
+            'total_customers' => Customer::when($branchId, fn($q) => $q->where('branch_id', $branchId))->count(),
+            'total_branches' => Branch::count(),
+            'total_employees' => Employee::when($branchId, fn($q) => $q->where('branch_id', $branchId))->count(),
         ];
 
-        $recentShipments = Shipment::with(['branch', 'customer'])->latest()->limit(10)->get();
+        $recentShipments = Shipment::with(['customer', 'branch'])
+            ->when($branchId, fn($q) => $q->where('branch_id', $branchId))
+            ->latest()
+            ->limit(10)
+            ->get();
 
-        return view('welcome', compact('stats', 'recentShipments'));
+        return view('admin.dashboard', compact('stats', 'recentShipments', 'user'));
     }
 }

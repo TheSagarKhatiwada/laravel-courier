@@ -3,42 +3,56 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Shipment;
 use App\Models\Customer;
 use App\Models\Employee;
-use App\Models\Shipment;
+use App\Models\Branch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        return view('welcome');
+        return view('admin.reports.index');
     }
 
     public function shipments(Request $request)
     {
-        $query = Shipment::with(['branch', 'customer'])->latest();
+        $user = Auth::user();
+        $query = Shipment::with(['branch', 'customer'])
+            ->when($user->branch_id, fn($q) => $q->where('branch_id', $user->branch_id))
+            ->when($request->from_date, fn($q) => $q->whereDate('booking_date', '>=', $request->from_date))
+            ->when($request->to_date, fn($q) => $q->whereDate('booking_date', '<=', $request->to_date))
+            ->when($request->status, fn($q) => $q->where('status', $request->status))
+            ->latest('booking_date');
 
-        if ($request->has('from')) {
-            $query->whereDate('booking_date', '>=', $request->from);
-        }
-        if ($request->has('to')) {
-            $query->whereDate('booking_date', '<=', $request->to);
-        }
+        $shipments = $query->paginate(50)->withQueryString();
+        $summary = [
+            'total' => $query->count(),
+            'delivered' => Shipment::when($user->branch_id, fn($q) => $q->where('branch_id', $user->branch_id))->where('status', 'delivered')->count(),
+            'in_transit' => Shipment::when($user->branch_id, fn($q) => $q->where('branch_id', $user->branch_id))->where('status', 'in_transit')->count(),
+        ];
 
-        $shipments = $query->paginate(50);
-        return view('welcome', compact('shipments'));
+        return view('admin.reports.shipments', compact('shipments', 'summary'));
     }
 
-    public function customers()
+    public function customers(Request $request)
     {
-        $customers = Customer::withCount('shipments')->with('branch')->latest()->paginate(50);
-        return view('welcome', compact('customers'));
+        $customers = Customer::with('branch')
+            ->withCount('shipments')
+            ->latest()
+            ->paginate(30);
+
+        return view('admin.reports.customers', compact('customers'));
     }
 
-    public function employees()
+    public function employees(Request $request)
     {
-        $employees = Employee::with('branch')->latest()->paginate(50);
-        return view('welcome', compact('employees'));
+        $employees = Employee::with('branch')
+            ->latest()
+            ->paginate(30);
+
+        return view('admin.reports.employees', compact('employees'));
     }
 }
