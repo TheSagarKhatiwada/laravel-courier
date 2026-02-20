@@ -18,9 +18,7 @@ Route::get('/track', [HomeController::class, 'trackPage'])->name('track.page');
 Route::post('/track', [TrackingController::class, 'publicTrack'])->name('track.public');
 Route::get('/track/{awb}', [TrackingController::class, 'show'])->name('track.show');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
-Route::get('/branches', [HomeController::class, 'branches'])->name('branches');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::get('/rates', [HomeController::class, 'rates'])->name('rates.public');
 
 // Auth
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -57,3 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports/customers', [ReportController::class, 'customers'])->name('reports.customers');
     Route::get('/reports/employees', [ReportController::class, 'employees'])->name('reports.employees');
 });
+
+// Public branches and rates pages - defined after resources to win URL resolution
+Route::get('/branches', [HomeController::class, 'branches'])->name('public.branches');
+Route::get('/rates', [HomeController::class, 'rates'])->name('rates.public');

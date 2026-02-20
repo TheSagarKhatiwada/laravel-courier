@@ -61,6 +61,7 @@ class ShipmentController extends Controller
         $validated['awb_number']   = Shipment::generateAwb($branch->code);
         $validated['created_by']   = Auth::id();
         $validated['booking_date'] = today();
+        $validated['status']       = 'booked';
 
         $shipment = Shipment::create($validated);
 

@@ -50,7 +50,7 @@
         <p class="text-blue-200 mb-6">Book your shipment online or visit your nearest branch.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{{ route('login') }}" class="px-8 py-3 bg-white text-blue-700 rounded-lg font-semibold hover:bg-gray-100">Book Now</a>
-            <a href="{{ route('branches') }}" class="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-blue-600">Find Branch</a>
+            <a href="{{ route('public.branches') }}" class="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-blue-600">Find Branch</a>
         </div>
     </div>
 </div>

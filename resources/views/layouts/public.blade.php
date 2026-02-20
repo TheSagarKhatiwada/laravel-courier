@@ -21,7 +21,7 @@
                     <a href="{{ route('home') }}" class="px-3 py-2 rounded hover:bg-blue-600 text-sm font-medium {{ request()->routeIs('home') ? 'bg-blue-800' : '' }}">Home</a>
                     <a href="{{ route('track.page') }}" class="px-3 py-2 rounded hover:bg-blue-600 text-sm font-medium {{ request()->routeIs('track.*') ? 'bg-blue-800' : '' }}">Track</a>
                     <a href="{{ route('services') }}" class="px-3 py-2 rounded hover:bg-blue-600 text-sm font-medium {{ request()->routeIs('services') ? 'bg-blue-800' : '' }}">Services</a>
-                    <a href="{{ route('branches') }}" class="px-3 py-2 rounded hover:bg-blue-600 text-sm font-medium {{ request()->routeIs('branches') ? 'bg-blue-800' : '' }}">Branches</a>
+                    <a href="{{ route('public.branches') }}" class="px-3 py-2 rounded hover:bg-blue-600 text-sm font-medium {{ request()->routeIs('public.branches') ? 'bg-blue-800' : '' }}">Branches</a>
                     <a href="{{ route('rates.public') }}" class="px-3 py-2 rounded hover:bg-blue-600 text-sm font-medium {{ request()->routeIs('rates.public') ? 'bg-blue-800' : '' }}">Rates</a>
                     <a href="{{ route('contact') }}" class="px-3 py-2 rounded hover:bg-blue-600 text-sm font-medium {{ request()->routeIs('contact') ? 'bg-blue-800' : '' }}">Contact</a>
                     @auth

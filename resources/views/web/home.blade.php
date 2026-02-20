@@ -92,7 +92,7 @@
                 @endforeach
             </div>
             <div class="text-center mt-8">
-                <a href="{{ route('branches') }}" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">View All Branches</a>
+                <a href="{{ route('public.branches') }}" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">View All Branches</a>
             </div>
         </div>
     </section>
